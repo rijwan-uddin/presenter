@@ -7,4 +7,3 @@ abstract class UserViewInterface {
 
   void showToastMessage(String message);
 }
-//declare and called the function and pass with the parameter

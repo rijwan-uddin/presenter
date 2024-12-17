@@ -7,4 +7,5 @@ class ToastMessages {
   static const String saveSuccess = "Data saved successfully!";
   static const String saveFail = "Data save unsuccessful!";
   static const String showPopup = "Showing saved data.";
+  static const String paymentSubmitSuccess = "Payment data submitted successfully!";
 }

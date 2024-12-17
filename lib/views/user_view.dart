@@ -8,8 +8,12 @@ class UserView extends StatelessWidget implements UserViewInterface {
   late final UserPresenter _presenter;
   final ValueNotifier<String> _userName = ValueNotifier<String>('');
   final ValueNotifier<int> _userAge = ValueNotifier<int>(0);
+
+  // Controllers
   final TextEditingController _carNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   UserView() {
     _presenter = UserPresenter(this);
@@ -26,15 +30,14 @@ class UserView extends StatelessWidget implements UserViewInterface {
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 4,
+      gravity: ToastGravity.TOP,
       backgroundColor: Colors.black,
       textColor: Colors.white,
       fontSize: 16.0,
     );
   }
 
-  void _showBottomModalSheet(BuildContext context, String carName, String phoneNumber) {
+  void _showSavedDataModal(BuildContext context, String carName, String phoneNumber) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -62,6 +65,82 @@ class UserView extends StatelessWidget implements UserViewInterface {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showPaymentModal(BuildContext context) {
+    _priceController.clear(); // Clear previous input
+    _addressController.clear();
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Payment Information',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _carNameController,
+                enabled: false,
+                decoration: const InputDecoration(
+                  labelText: 'Car Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _phoneController,
+                enabled: false,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _priceController,
+                decoration: const InputDecoration(
+                  labelText: 'Price',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    _presenter.savePaymentData(
+                      _carNameController.text,
+                      _phoneController.text,
+                      _priceController.text,
+                      _addressController.text,
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Submit Payment'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -137,7 +216,7 @@ class UserView extends StatelessWidget implements UserViewInterface {
                       },
                       icon: const Icon(Icons.clear),
                       label: const Text('Unload User Data'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent[100]),
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton.icon(
@@ -153,15 +232,29 @@ class UserView extends StatelessWidget implements UserViewInterface {
                       onPressed: () {
                         if (_carNameController.text.isNotEmpty &&
                             _phoneController.text.isNotEmpty) {
-                          _showBottomModalSheet(context,
-                              _carNameController.text, _phoneController.text);
+                          _showSavedDataModal(
+                              context, _carNameController.text, _phoneController.text);
                         } else {
                           showToastMessage("No data to display");
                         }
                       },
                       icon: const Icon(Icons.visibility),
                       label: const Text('Show Saved Data'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green[100]),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        if (_carNameController.text.isNotEmpty &&
+                            _phoneController.text.isNotEmpty) {
+                          _showPaymentModal(context);
+                        } else {
+                          showToastMessage("Please save data first");
+                        }
+                      },
+                      icon: const Icon(Icons.payment),
+                      label: const Text('Payment'),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.orange[100]),
                     ),
                   ],
                 ),

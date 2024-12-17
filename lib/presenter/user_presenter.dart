@@ -46,4 +46,6 @@ class UserPresenter {
   void handleButton3Press(String carName, String phoneNumber) {
     saveCarData(carName, phoneNumber);
   }
+
+  void savePaymentData(String text, String text2, String text3, String text4) {}
 }
