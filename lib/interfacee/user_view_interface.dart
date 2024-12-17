@@ -1,5 +1,5 @@
 abstract class UserViewInterface {
-  void showUserData(String userName, int userAge, String address);
+  void showUserData(String userName, int userAge);
 
   void onDelete(String userName);
 
